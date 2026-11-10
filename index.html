@@ -33,7 +33,7 @@ body { background: #f5f5f5; color: #222; margin: 0; padding: 16px; display: flex
 /* ЕКРАН 2: ПЛАНУВАЛЬНИК ДНЯ */
 .day-header { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 15px; }
 .back-btn { border: none; background: transparent; font-size: 28px; cursor: pointer; padding: 0 5px; }
-.day-title { font-size: 20px; font-weight: bold; }
+.day-title { font-size: 18px; font-weight: bold; }
 .section { margin-bottom: 25px; }
 .heading { font-size: 18px; font-weight: bold; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
 .task { display: flex; align-items: center; gap: 12px; margin: 12px 0; font-size: 16px; }
@@ -77,7 +77,7 @@ body { background: #f5f5f5; color: #222; margin: 0; padding: 16px; display: flex
         <div class="heading">🔴 Обов'язково сьогодні</div>
         <div id="redTaskList"></div>
         <div class="add">
-          <input id="redTaskInput" placeholder="Додати завдання..." onkeydown="handleEnter(event, 'red')">
+          <input id="redTaskInput" placeholder="Добавить завдання..." onkeydown="handleEnter(event, 'red')">
           <button onclick="addTask('red')">+</button>
         </div>
       </div>
@@ -85,7 +85,7 @@ body { background: #f5f5f5; color: #222; margin: 0; padding: 16px; display: flex
         <div class="heading">🟩 Необов'язково сьогодні</div>
         <div id="greenTaskList"></div>
         <div class="add">
-          <input id="greenTaskInput" placeholder="Додати завдання..." onkeydown="handleEnter(event, 'green')">
+          <input id="greenTaskInput" placeholder="Добавить завдання..." onkeydown="handleEnter(event, 'green')">
           <button onclick="addTask('green')">+</button>
         </div>
       </div>
@@ -134,9 +134,9 @@ function renderCalendar() {
   const month = currentDate.getMonth();
   document.getElementById("monthTitle").textContent = monthNames[month] + " " + year;
 
-  const firstDayIndex = new Date(year, month, 1).getDay();
-  const shift = firstDayIndex === 0 ? 6 : firstDayIndex - 1; 
-  const totalDays = new Date(year, month + 1, 0).getDate();
+  let firstDayIndex = new Date(year, month, 1).getDay();
+  let shift = firstDayIndex === 0 ? 6 : firstDayIndex - 1; 
+  let totalDays = new Date(year, month + 1, 0).getDate();
 
   const grid = document.getElementById("daysGrid");
   grid.innerHTML = "";

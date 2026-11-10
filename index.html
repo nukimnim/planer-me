@@ -184,7 +184,6 @@ function rollOverTasks() {
 function renderCalendar() {
   rollOverTasks();
   document.body.className = "month-" + currentDate.getMonth(); // <-- ДОБАВИТЬ СЮДА
-  document.getElementById("calendarScreen").classList.add("active");
 
   document.getElementById("calendarScreen").classList.add("active");
   document.getElementById("dayScreen").classList.remove("active");

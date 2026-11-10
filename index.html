@@ -12,7 +12,7 @@
 body { color: #222; margin: 0; padding: 12px; display: flex; justify-content: center; }
 
 /* Календар займає всю ширину екрана */
-.app-container { background: rgba(255, 255, 255, 0.75); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); width: 100%; max-width: 100%; min-height: 95vh; padding: 10px; position: relative; border-radius: 16px; }
+.app-container { background: rgba(255, 255, 255, 0.4); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(10px); width: 100%; max-width: 100%; min-height: 95vh; padding: 10px; position: relative; border-radius: 16px; }
 
 /* ЕКРАН 1: КАЛЕНДАР */
 .screen { display: none; }
@@ -76,18 +76,20 @@ body {
 }
 
 /* Привязка файлов (1 - декабрь, 2 - январь, 3 - февраль и т.д.) */
-body.month-0 { background-image: url('2.jpg'); }  /* Январь */
-body.month-1 { background-image: url('3.jpg'); }  /* Февраль */
-body.month-2 { background-image: url('4.jpg'); }  /* Март */
-body.month-3 { background-image: url('5.jpg'); }  /* Апрель */
-body.month-4 { background-image: url('6.jpg'); }  /* Май */
-body.month-5 { background-image: url('7.jpg'); }  /* Июнь */
-body.month-6 { background-image: url('8.jpg'); }  /* Июль */
-body.month-7 { background-image: url('9.jpg'); }  /* Август */
-body.month-8 { background-image: url('10.jpg'); } /* Сентябрь */
-body.month-9 { background-image: url('11.jpg'); } /* Октябрь */
-body.month-10 { background-image: url('12.jpg'); }/* Ноябрь */
-body.month-11 { background-image: url('1.jpg'); }  /* Декабрь */
+/* Исправленная привязка файлов со сдвигом на 1 месяц назад */
+body.month-0 { background-image: url('3.jpg'); }  /* Январь */
+body.month-1 { background-image: url('4.jpg'); }  /* Февраль */
+body.month-2 { background-image: url('5.jpg'); }  /* Март */
+body.month-3 { background-image: url('6.jpg'); }  /* Апрель */
+body.month-4 { background-image: url('7.jpg'); }  /* Май */
+body.month-5 { background-image: url('8.jpg'); }  /* Июнь */
+body.month-6 { background-image: url('9.jpg'); }  /* Июль */
+body.month-7 { background-image: url('10.jpg'); } /* Август */
+body.month-8 { background-image: url('11.jpg'); } /* Сентябрь */
+body.month-9 { background-image: url('12.jpg'); } /* Октябрь */
+body.month-10 { background-image: url('1.jpg'); } /* Ноябрь */
+body.month-11 { background-image: url('2.jpg'); } /* Декабрь */
+
 
 </style>
 </head>

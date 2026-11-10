@@ -227,19 +227,51 @@ const dayNames = ["Неділя", "Понеділок", "Вівторок", "С�
 let currentDate = new Date();
 let selectedDateKey = "";
 
-let data;
-try {
-data = JSON.parse(localStorage.getItem(KEY) || '{"tasks":[]}');
-} catch (error) {
-console.error("Помилка завантаження задач:", error);
-data = { tasks: [] };
-}
+let data = { tasks: [] };
+let db;
+const DB_NAME = "CalendarPlannerDB";
+const DB_STORE = "planner";
+
 if (!Array.isArray(data.tasks)) data.tasks = [];
 
-function save() { localStorage.setItem(KEY, JSON.stringify(data)); }
+function openDB() {
+return new Promise((resolve, reject) => {
+const request = indexedDB.open(DB_NAME, 1);
+request.onupgradeneeded = () => {
+if (!request.result.objectStoreNames.contains(DB_STORE)) {
+request.result.createObjectStore(DB_STORE);
+}
+};
+
+request.onsuccess = () => resolve(request.result);
+request.onerror = () => reject(request.error);
+});
+}
 
 function formatDateKey(date) {
 return [date.getFullYear(), String(date.getMonth()+1).padStart(2,"0"), String(date.getDate()).padStart(2,"0")].join("-");
+}
+async function loadData() {
+db = await openDB();
+let old = await new Promise(resolve => {
+const r = db.transaction(DB_STORE).objectStore(DB_STORE).get("data");
+r.onsuccess = () => resolve(r.result);
+r.onerror = () => resolve(null);
+});
+if (!old) {
+try { old = JSON.parse(localStorage.getItem(KEY)); }
+catch (e) { old = null; }
+}
+data = old && Array.isArray(old.tasks) ? old : { tasks: [] };
+await save();
+}
+function save() {
+return new Promise((resolve, reject) => {
+const tx = db.transaction(DB_STORE, "readwrite");
+tx.objectStore(DB_STORE).put(data, "data");
+tx.oncomplete = resolve;
+tx.onerror = () => reject(tx.error);
+});
 }
 
 function rollOverTasks() {
@@ -313,6 +345,15 @@ function changeMonth(amount) {
 currentDate.setMonth(currentDate.getMonth() + amount);
 renderCalendar();
 }
+let touchStartX = 0;
+const calendar = document.getElementById("calendarScreen");
+calendar.addEventListener("touchstart", e => {
+touchStartX = e.changedTouches[0].screenX;
+}, { passive: true });
+calendar.addEventListener("touchend", e => {
+const diff = e.changedTouches[0].screenX - touchStartX;
+if (Math.abs(diff) > 70) changeMonth(diff > 0 ? -1 : 1);
+}, { passive: true });
 
 function openCalendar() {
 renderCalendar();
@@ -338,6 +379,12 @@ redList.innerHTML = "";
 greenList.innerHTML = "";
 
 const tasks = data.tasks.filter(t => t.date === selectedDateKey);
+const doneCount = tasks.filter(t => t.done).length;
+const percent = tasks.length ? Math.round(doneCount / tasks.length * 100) : 0;
+document.getElementById("progressInfo").textContent =
+`Виконано: ${doneCount} із ${tasks.length} (${percent}%)`;
+
+document.getElementById("progressFill").style.width = percent + "%";
 
 tasks.forEach(task => {
 const row = document.createElement("div");
@@ -385,10 +432,72 @@ if (e.key === "Enter") {
 addTask('red');
 }
 }
+async function exportBackup() {
+const file = new File([JSON.stringify(data, null, 2)],
+"calendar-backup.json", { type: "application/json" });
+if (navigator.canShare?.({ files: [file] })) {
+await navigator.share({ files: [file], title: "Backup" });
+return;
+}
+async function exportBackup() {
+const file = new File(
+[JSON.stringify(data, null, 2)],
+"calendar-backup.json",
+{ type: "application/json" }
+);
+
+if (navigator.canShare?.({ files: [file] })) {
+try {
+await navigator.share({ files: [file], title: "Backup" });
+return;
+} catch (e) {
+if (e.name === "AbortError") return;
+}
+}
+
+const url = URL.createObjectURL(file);
+const a = document.createElement("a");
+a.href = url;
+a.download = file.name;
+a.click();
+
+setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+async function importBackup(event) {
+const file = event.target.files[0];
+if (!file) return;
+
+try {
+const backup = JSON.parse(await file.text());
+
+if (!backup || !Array.isArray(backup.tasks)) {
+throw Error("Некорректный формат");
+}
+
+data = { tasks: backup.tasks };
+await save();
+
+renderCalendar();
+
+if (selectedDateKey) renderTasks();
+
+alert("Бекап відновлено!");
+} catch (e) {
+alert("Некоректний файл резервної копії.");
+}
+
+event.target.value = "";
+}
+
+
 document.addEventListener("click", function() {
 document.getElementById("typeMenu").classList.remove("active");
 });
-renderCalendar();
+loadData().then(renderCalendar).catch(error => {
+console.error("Помилка бази даних:", error);
+alert("Не вдалося відкрити сховище завдань.");
+});
 </script>
 </body>
 </html>

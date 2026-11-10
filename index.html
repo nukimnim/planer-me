@@ -265,19 +265,35 @@ function renderTasks() {
     else greenList.append(row);
   });
 }
+function toggleMenu(e) {
+  e.stopPropagation();
+  document.getElementById("typeMenu").classList.toggle("active");
+}
 
 function addTask(type) {
-const input = document.getElementById(type === 'red' ? "redTaskInput" : "greenTaskInput");
-const text = input.value.trim();
-if (!text) return;
-data.tasks.push({ text: text, type: type, done: false, date: selectedDateKey });
-input.value = "";
-save();
-renderTasks();
+  const input = document.getElementById("taskInput");
+  const text = input.value.trim();
+  if (!text) return;
+
+  data.tasks.push({ text: text, type: type, done: false, date: selectedDateKey });
+  input.value = "";
+  document.getElementById("typeMenu").classList.remove("active");
+  save();
+  renderTasks();
 }
-function handleEnter(e, type) {
-if (e.key === "Enter") addTask(type);
+
+function handleEnter(e) {
+  if (e.key === "Enter") {
+    // По нажатию на Enter добавляет задачу как важную (красную)
+    addTask('red');
+  }
 }
+
+// Закрытие меню выбора цвета при клике в любое другое место экрана
+document.addEventListener("click", function() {
+  document.getElementById("typeMenu").classList.remove("active");
+});
+
 renderCalendar();
 </script>
 </body>

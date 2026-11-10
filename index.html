@@ -98,6 +98,18 @@ body { background: white; color: #222; margin: 0; padding: 12px; display: flex; 
 
       <!-- Одно поле ввода с меню на плюсике -->
       <div class="add-container">
+             <div class="content">
+      
+      <div class="section">
+        <div id="redTaskList"></div>
+      </div>
+      
+      <div class="section">
+        <div id="greenTaskList"></div>
+      </div>
+
+      <!-- Одне єдине поле введення з меню кольорів -->
+      <div class="add-container">
         <div class="add-bar">
           <input id="taskInput" placeholder="Додати завдання..." onkeydown="handleEnter(event)">
           <button onclick="toggleMenu(event)">+</button>
@@ -109,15 +121,7 @@ body { background: white; color: #222; margin: 0; padding: 12px; display: flex; 
       </div>
 
     </div>
-  </div>
 
-</div>
-
-<script>
-const KEY = "advanced_calendar_planner_v3";
-const monthNames = ["Січень", "Лютий", "Березень", "Квітень", "Травень", "Червень", "Липень", "Серпень", "Вересень", "Жовтень", "Листопад", "Грудень"];
-const monthNamesGen = ["Січня", "Лютого", "Березня", "Квітня", "Травня", "Червня", "Липня", "Серпня", "Вересня", "Жовтня", "Листопада", "Грудня"];
-const dayNames = ["Неділя", "Понеділок", "Вівторок", "Середа", "Четвер", "П'ятниця", "Субота"];
 
 let currentDate = new Date(); 
 let selectedDateKey = ""; 

@@ -433,13 +433,6 @@ addTask('red');
 }
 }
 async function exportBackup() {
-const file = new File([JSON.stringify(data, null, 2)],
-"calendar-backup.json", { type: "application/json" });
-if (navigator.canShare?.({ files: [file] })) {
-await navigator.share({ files: [file], title: "Backup" });
-return;
-}
-async function exportBackup() {
 const file = new File(
 [JSON.stringify(data, null, 2)],
 "calendar-backup.json",

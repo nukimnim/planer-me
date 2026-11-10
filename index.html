@@ -2,18 +2,44 @@
 <html lang="uk">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <title>Мій Календар-Планувальник</title>
-
-<link rel="manifest" href="data:application/manifest+json,{%22name%22:%22%D0%9F%D0%BB%D0%B0%D0%BD%D1%83%D0%B2%D0%B0%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA%22,%22short_name%22:%22%D0%9F%D0%BB%D0%B0%D0%BD%22,%22start_url%22:%22.%22,%22display%22:%22standalone%22,%22background_color%22:%22%23ffffff%22,%22theme_color%22:%22%23ffffff%22}">
-
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-* { box-sizing: border-box; font-family: Arial, sans-serif; }
-body { color: #222; margin: 0; padding: 12px; display: flex; justify-content: center; }
+* { box-sizing: border-box; }
+*::-webkit-scrollbar {
+display: none;
+}
+*{
+scrollbar-width: none;
+-webkit-tap-highlight-color: transparent;
+}
+
+html, body { width: 100%; min-height: 100%; }
+body {
+font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+color: #222;
+margin: 0;
+padding: calc(12px + env(safe-area-inset-top)) 12px calc(12px + env(safe-area-inset-bottom));
+display: flex; justify-content: center; }
 
 /* Календар займає всю ширину екрана */
-.app-container { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); width: 100%; max-width: 100%; min-height: 95vh; padding: 10px; position: relative; border-radius: 16px; }
-
+.app-container {
+background: rgba(255,255,255,0.82);
+backdrop-filter: blur(16px);
+-webkit-backdrop-filter: blur(16px);
+width: 100%; max-width: 100%;
+min-height: calc(100vh - 24px);
+padding: 14px;
+position: relative;
+border-radius: 20px;
+}
 
 /* ЕКРАН 1: КАЛЕНДАР */
 .screen { display: none; }
@@ -24,9 +50,15 @@ body { color: #222; margin: 0; padding: 12px; display: flex; justify-content: ce
 .days-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; }
 
 /* Квадратики днів на всю сторінку */
-.day-cell { aspect-ratio: 1; border: 1px solid rgba(0, 0, 0, 0.0.5); border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 18px; cursor: pointer; position: relative; background: rgba(255, 255, 255, 0.2); }
+.day-cell { aspect-ratio: 1; border: 1px solid rgba(0, 0, 0, 0.05); border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 18px; cursor: pointer; position: relative; background: rgba(255, 255, 255, 0.2); }
 
 .day-cell:hover { background: #eee; }
+.day-cell, button, .task {
+transition: transform 0.1s ease, background 0.2s ease, opacity 0.2s ease;
+}
+.day-cell:active, button:active {
+transform: scale(0.96);
+}
 .day-cell.empty { border: none; background: transparent; cursor: default; }
 .day-cell.today { border: 2.5px solid #222; font-weight: bold; background: #eef5ff; }
 .day-dots { display: flex; gap: 4px; position: absolute; bottom: 6px; }
@@ -45,8 +77,35 @@ body { color: #222; margin: 0; padding: 12px; display: flex; justify-content: ce
 .task.red input { background: #d71920; border-color: #d71920; }
 .task.green input { background: #a8dc00; border-color: #91bf00; }
 .task input:checked::after { content: "✓"; color: white; position: absolute; top: -3px; left: 2px; font-size: 14px; font-weight: bold; }
-.task span { flex: 1; overflow-wrap: anywhere; }
-.task.done span { text-decoration: line-through; color: #999; }
+.task span {
+flex: 1;
+overflow-wrap: anywhere;
+transition: color 0.25s ease, opacity 0.25s ease;
+}
+.task.done span {
+text-decoration: line-through;
+color: #999;
+opacity: 0.55;
+}
+.progress-info {
+font-size: 14px;
+color: #777;
+margin: 0 0 10px;
+}
+.progress-track {
+height: 7px;
+background: #e8e8e8;
+border-radius: 10px;
+overflow: hidden;
+}
+.progress-fill {
+height: 100%;
+width: 0;
+background: #a8dc00;
+border-radius: 10px;
+transition: width 0.4s ease;
+}
+
 .delete { border: none; background: transparent; color: #aaa; font-size: 18px; cursor: pointer; }
 
 /* Зона введення */
@@ -60,37 +119,43 @@ body { color: #222; margin: 0; padding: 12px; display: flex; justify-content: ce
 .type-menu.active { display: flex; }
 .menu-item { border: none; background: transparent; font-size: 15px; padding: 8px 12px; cursor: pointer; display: flex; align-items: center; gap: 8px; border-radius: 6px; text-align: left; width: 100%; white-space: nowrap; }
 .menu-item:hover { background: #f5f5f5; }
-  /* Базовые настройки фона */
+ /* Базовые настройки фона */
 body {
-  background-repeat: no-repeat;
-  background-position: center center;
-  background-attachment: fixed;
-  background-size: cover; 
-
-  color: #222; 
-  margin: 0; 
-  padding: 12px; 
-  display: flex; 
-  justify-content: center; 
-  min-height: 100vh;
-  transition: background 0.5s ease;
+background-repeat: no-repeat;
+background-position: center center;
+background-attachment: fixed;
+background-size: cover;
+transition: background 0.5s ease;
 }
 
 /* Привязка файлов (1 - декабрь, 2 - январь, 3 - февраль и т.д.) */
-/* Исправленная привязка файлов со сдвигом на 1 месяц назад */
-body.month-0 { background-image: url('1.jpg'); }  /* Январь */
-body.month-1 { background-image: url('2.jpg'); }  /* Февраль */
+ /*Исправленная привязка файлов со сдвигом на 1 месяц назад */
+body.month-0 { background-image: url('1.jpg'); } /*Январь */
+body.month-1 { background-image: url('2.jpg'); } /*Февраль */
 body.month-2 { background-image: url('3.jpg'); }  /* Март */
-body.month-3 { background-image: url('4.jpg'); }  /* Апрель */
-body.month-4 { background-image: url('5.jpg'); }  /* Май */
-body.month-5 { background-image: url('6.jpg'); }  /* Июнь */
-body.month-6 { background-image: url('7.jpg'); }  /* Июль */
-body.month-7 { background-image: url('8.jpg'); } /* Август */
+body.month-3 { background-image: url('4.jpg'); } /*Апрель */
+body.month-4 { background-image: url('5.jpg'); } /* Май */
+body.month-5 { background-image: url('6.jpg'); } /* Июнь */
+body.month-6 { background-image: url('7.jpg'); } /* Июль */
+body.month-7 { background-image: url('8.jpg'); } /*Август */
 body.month-8 { background-image: url('9.jpg'); } /* Сентябрь */
 body.month-9 { background-image: url('10.jpg'); } /* Октябрь */
-body.month-10 { background-image: url('11.jpg'); } /* Ноябрь */
-body.month-11 { background-image: url('12.jpg'); } /* Декабрь */
+body.month-10 { background-image: url('11.jpg'); } /*Ноябрь */
+body.month-11 { background-image: url('12.jpg'); } /*Декабрь */
 
+.backup-controls {
+display: flex;
+flex-direction: column;
+gap: 10px;
+margin-top: 28px;
+}
+.backup-controls button {
+padding: 12px;
+border: 1px solid #ddd;
+border-radius: 12px;
+background: rgba(255,255,255,0.8);
+font: inherit;
+}
 
 </style>
 </head>
@@ -98,49 +163,58 @@ body.month-11 { background-image: url('12.jpg'); } /* Декабрь */
 
 <div class="app-container">
 
-  <!-- ЕКРАН 1: КАЛЕНДАР -->
-  <div id="calendarScreen" class="screen active">
-    <div class="calendar-header">
-      <button onclick="changeMonth(-1)">‹</button>
-      <span id="monthTitle">Місяць Рік</span>
-      <button onclick="changeMonth(1)">›</button>
-    </div>
-    <div class="weekdays">
-      <div>Пн</div><div>Вт</div><div>Ср</div><div>Чт</div><div>Пт</div><div>Сб</div><div>Нд</div>
-    </div>
-    <div id="daysGrid" class="days-grid"></div>
-  </div>
+<!-- ЕКРАН 1: КАЛЕНДАР -->
+<div id="calendarScreen" class="screen active">
+<div class="calendar-header">
+<button onclick="changeMonth(-1)">‹</button>
+<span id="monthTitle">Місяць Рік</span>
+<button onclick="changeMonth(1)">›</button>
+</div>
+<div class="weekdays">
+<div>Пн</div><div>Вт</div><div>Ср</div><div>Чт</div><div>Пт</div><div>Сб</div><div>Нд</div>
+</div>
+<div id="daysGrid" class="days-grid"></div>
+</div>
 
-  <!-- ЕКРАН 2: ПЛАНУВАЛЬНИК ДНЯ -->
-  <div id="dayScreen" class="screen">
-    <div class="day-header">
-      <button class="back-btn" onclick="openCalendar()">‹</button>
-      <div class="day-title" id="dayScreenTitle">День тижня</div>
-    </div>
-    <div class="content">
-      
-      <div class="section">
-        <div id="redTaskList"></div>
-      </div>
-      
-      <div class="section">
-        <div id="greenTaskList"></div>
-      </div>
+<!-- ЕКРАН 2: ПЛАНУВАЛЬНИК ДНЯ -->
+<div id="dayScreen" class="screen">
+<div class="day-header">
+<button class="back-btn" onclick="openCalendar()">‹</button>
+<div class="day-title" id="dayScreenTitle">День тижня</div>
+</div>
+<div class="content">
+<div id="progressInfo" class="progress-info"></div>
+<div class="progress-track">
+<div id="progressFill" class="progress-fill"></div>
+</div>
 
-      <!-- Одне єдине поле введення -->
-      <div class="add-container">
-        <div class="add-bar">
-          <input id="taskInput" placeholder="Додати завдання..." onkeydown="handleEnter(event)">
-          <button onclick="toggleMenu(event)">+</button>
-        </div>
-        <div id="typeMenu" class="type-menu">
-          <button class="menu-item" onclick="addTask('red')">🔴 Обов'язково</button>
-          <button class="menu-item" onclick="addTask('green')">🟩 Необов'язково</button>
-        </div>
-      </div>
+<div class="section">
+<div id="redTaskList"></div>
+</div>
 
-    </div>
-  </div>
+<div class="section">
+<div id="greenTaskList"></div>
+</div>
+
+<!-- Одне єдине поле введення -->
+<div class="add-container">
+<div class="add-bar">
+<input id="taskInput" placeholder="Додати завдання..." onkeydown="handleEnter(event)">
+<button onclick="toggleMenu(event)">+</button>
+</div>
+<div id="typeMenu" class="type-menu">
+<button class="menu-item" onclick="addTask('red')">🔴 Обов'язково</button>
+<button class="menu-item" onclick="addTask('green')">🟩 Необов'язково</button>
+</div>
+</div>
+<div class="backup-controls">
+<button onclick="exportBackup()">Скачать бэкап</button>
+<button onclick="document.getElementById('backupFile').click()">Восстановить из файла</button>
+<input id="backupFile" type="file" accept=".json,application/json" hidden onchange="importBackup(event)">
+</div>
+
+</div>
+</div>
 
 </div>
 
@@ -150,127 +224,127 @@ const monthNames = ["Січень", "Лютий", "Березень", "Квіт�
 const monthNamesGen = ["Січня", "Лютого", "Березня", "Квітня", "Травня", "Червня", "Липня", "Серпня", "Вересня", "Жовтня", "Листопада", "Грудня"];
 const dayNames = ["Неділя", "Понеділок", "Вівторок", "Середа", "Четвер", "П'ятниця", "Субота"];
 
-let currentDate = new Date(); 
-let selectedDateKey = ""; 
+let currentDate = new Date();
+let selectedDateKey = "";
 
 let data;
 try {
-  data = JSON.parse(localStorage.getItem(KEY) || '{"tasks":[]}');
+data = JSON.parse(localStorage.getItem(KEY) || '{"tasks":[]}');
 } catch (error) {
-  console.error("Помилка завантаження задач:", error);
-  data = { tasks: [] };
+console.error("Помилка завантаження задач:", error);
+data = { tasks: [] };
 }
 if (!Array.isArray(data.tasks)) data.tasks = [];
 
 function save() { localStorage.setItem(KEY, JSON.stringify(data)); }
 
 function formatDateKey(date) {
-  return [date.getFullYear(), String(date.getMonth()+1).padStart(2,"0"), String(date.getDate()).padStart(2,"0")].join("-");
+return [date.getFullYear(), String(date.getMonth()+1).padStart(2,"0"), String(date.getDate()).padStart(2,"0")].join("-");
 }
 
 function rollOverTasks() {
-  const todayStr = formatDateKey(new Date());
-  if (data.lastDate !== todayStr) {
-    data.tasks.forEach(task => {
-      if (!task.done && task.type === 'green' && task.date < todayStr) {
-        task.date = todayStr;
-      }
-    });
-    data.lastDate = todayStr;
-    save();
-  }
+const todayStr = formatDateKey(new Date());
+if (data.lastDate !== todayStr) {
+data.tasks.forEach(task => {
+if (!task.done && task.type === 'green' && task.date < todayStr) {
+task.date = todayStr;
+}
+});
+data.lastDate = todayStr;
+save();
+}
 }
 
 function renderCalendar() {
-  rollOverTasks();
-  document.body.className = "month-" + currentDate.getMonth(); // <-- ДОБАВИТЬ СЮДА
+rollOverTasks();
+document.body.className = "month-" + currentDate.getMonth(); // <-- ДОБАВИТЬ СЮДА
 
-  document.getElementById("calendarScreen").classList.add("active");
-  document.getElementById("dayScreen").classList.remove("active");
+document.getElementById("calendarScreen").classList.add("active");
+document.getElementById("dayScreen").classList.remove("active");
 
-  const year = currentDate.getFullYear();
-  const month = currentDate.getMonth();
-  document.getElementById("monthTitle").textContent = monthNames[month] + " " + year;
+const year = currentDate.getFullYear();
+const month = currentDate.getMonth();
+document.getElementById("monthTitle").textContent = monthNames[month] + " " + year;
 
-  let firstDayIndex = new Date(year, month, 1).getDay();
-  let shift = firstDayIndex === 0 ? 6 : firstDayIndex - 1; 
-  let totalDays = new Date(year, month + 1, 0).getDate();
+let firstDayIndex = new Date(year, month, 1).getDay();
+let shift = firstDayIndex === 0 ? 6 : firstDayIndex - 1;
+let totalDays = new Date(year, month + 1, 0).getDate();
 
-  const grid = document.getElementById("daysGrid");
-  grid.innerHTML = "";
+const grid = document.getElementById("daysGrid");
+grid.innerHTML = "";
 
-  for (let i = 0; i < shift; i++) {
-    const emptyCell = document.createElement("div");
-    emptyCell.className = "day-cell empty";
-    grid.append(emptyCell);
-  }
+for (let i = 0; i < shift; i++) {
+const emptyCell = document.createElement("div");
+emptyCell.className = "day-cell empty";
+grid.append(emptyCell);
+}
 
-  const todayStr = formatDateKey(new Date());
-  for (let d = 1; d <= totalDays; d++) {
-    const cellDate = new Date(year, month, d);
-    const cellKey = formatDateKey(cellDate);
+const todayStr = formatDateKey(new Date());
+for (let d = 1; d <= totalDays; d++) {
+const cellDate = new Date(year, month, d);
+const cellKey = formatDateKey(cellDate);
 
-    const cell = document.createElement("div");
-    cell.className = "day-cell";
-    if (cellKey === todayStr) cell.classList.add("today");
-    cell.innerHTML = "<span>" + d + "</span>";
+const cell = document.createElement("div");
+cell.className = "day-cell";
+if (cellKey === todayStr) cell.classList.add("today");
+cell.innerHTML = "<span>" + d + "</span>";
 
-    const dayTasks = data.tasks.filter(t => t.date === cellKey);
-    if (dayTasks.length > 0) {
-      const dotsContainer = document.createElement("div");
-      dotsContainer.className = "day-dots";
-      if (dayTasks.some(t => t.type === 'red' && !t.done)) {
-        const rDot = document.createElement("div"); rDot.className = "dot red"; dotsContainer.append(rDot);
-      }
-      if (dayTasks.some(t => t.type === 'green' && !t.done)) {
-        const gDot = document.createElement("div"); gDot.className = "dot green"; dotsContainer.append(gDot);
-      }
-      cell.append(dotsContainer);
-    }
+const dayTasks = data.tasks.filter(t => t.date === cellKey);
+if (dayTasks.length > 0) {
+const dotsContainer = document.createElement("div");
+dotsContainer.className = "day-dots";
+if (dayTasks.some(t => t.type === 'red' && !t.done)) {
+const rDot = document.createElement("div"); rDot.className = "dot red"; dotsContainer.append(rDot);
+}
+if (dayTasks.some(t => t.type === 'green' && !t.done)) {
+const gDot = document.createElement("div"); gDot.className = "dot green"; dotsContainer.append(gDot);
+}
+cell.append(dotsContainer);
+}
 
-    cell.onclick = (function(k) {
-      return function() { openDay(k); };
-    })(cellKey);
-    grid.append(cell);
-  }
+cell.onclick = (function(k) {
+return function() { openDay(k); };
+})(cellKey);
+grid.append(cell);
+}
 }
 
 function changeMonth(amount) {
-  currentDate.setMonth(currentDate.getMonth() + amount);
-  renderCalendar();
+currentDate.setMonth(currentDate.getMonth() + amount);
+renderCalendar();
 }
 
 function openCalendar() {
-  renderCalendar();
+renderCalendar();
 }
 
 function openDay(dateKey) {
-  selectedDateKey = dateKey;
-  document.getElementById("calendarScreen").classList.remove("active");
-  document.getElementById("dayScreen").classList.add("active");
-  document.getElementById("typeMenu").classList.remove("active");
+selectedDateKey = dateKey;
+document.getElementById("calendarScreen").classList.remove("active");
+document.getElementById("dayScreen").classList.add("active");
+document.getElementById("typeMenu").classList.remove("active");
 
-  const parts = dateKey.split("-").map(Number);
-  const dateObj = new Date(parts[0], parts[1] - 1, parts[2]);
-  document.getElementById("dayScreenTitle").textContent = parts[2] + " " + monthNamesGen[parts[1]-1] + ", " + dayNames[dateObj.getDay()];
+const parts = dateKey.split("-").map(Number);
+const dateObj = new Date(parts[0], parts[1] - 1, parts[2]);
+document.getElementById("dayScreenTitle").textContent = parts[2] + " " + monthNamesGen[parts[1]-1] + ", " + dayNames[dateObj.getDay()];
 
-  renderTasks();
+renderTasks();
 }
 
 function renderTasks() {
-  const redList = document.getElementById("redTaskList");
-  const greenList = document.getElementById("greenTaskList");
-  redList.innerHTML = "";
-  greenList.innerHTML = "";
+const redList = document.getElementById("redTaskList");
+const greenList = document.getElementById("greenTaskList");
+redList.innerHTML = "";
+greenList.innerHTML = "";
 
-  const tasks = data.tasks.filter(t => t.date === selectedDateKey);
+const tasks = data.tasks.filter(t => t.date === selectedDateKey);
 
-  tasks.forEach(task => {
-    const row = document.createElement("div");
-    row.className = "task " + task.type + (task.done ? " done" : "");
+tasks.forEach(task => {
+const row = document.createElement("div");
+row.className = "task " + task.type + (task.done ? " done" : "");
 
-    const checkbox = document.createElement("input");
-    checkbox.type = "checkbox";
+const checkbox = document.createElement("input");
+checkbox.type = "checkbox";
 checkbox.checked = task.done;
 checkbox.onchange = function() {
 task.done = checkbox.checked;
@@ -315,6 +389,6 @@ document.addEventListener("click", function() {
 document.getElementById("typeMenu").classList.remove("active");
 });
 renderCalendar();
-  </script>
+</script>
 </body>
 </html>

@@ -23,7 +23,8 @@ body { color: #222; margin: 0; padding: 12px; display: flex; justify-content: ce
 .days-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; }
 
 /* Квадратики днів на всю сторінку */
-.day-cell { aspect-ratio: 1; border: 1px solid #ccc; border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 18px; cursor: pointer; position: relative; background: #fcfcfc; }
+.day-cell { aspect-ratio: 1; border: 1px solid rgba(0, 0, 0, 0.1); border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 18px; cursor: pointer; position: relative; background: rgba(255, 255, 255, 0.6); }
+
 .day-cell:hover { background: #eee; }
 .day-cell.empty { border: none; background: transparent; cursor: default; }
 .day-cell.today { border: 2.5px solid #222; font-weight: bold; background: #eef5ff; }

@@ -84,15 +84,32 @@ body { background: white; color: #222; margin: 0; padding: 12px; display: flex; 
       <button class="back-btn" onclick="openCalendar()">‹</button>
       <div class="day-title" id="dayScreenTitle">День тижня</div>
     </div>
-    <div class="content">
+      <div class="content">
+      
       <div class="section">
         <div class="heading">🔴 Обов'язково сьогодні</div>
         <div id="redTaskList"></div>
-        <div class="add">
-          <input id="redTaskInput" placeholder="Добавить завдання..." onkeydown="handleEnter(event, 'red')">
-          <button onclick="addTask('red')">+</button>
+      </div>
+      
+      <div class="section">
+        <div class="heading">🟩 Необов'язково сьогодні</div>
+        <div id="greenTaskList"></div>
+      </div>
+
+      <!-- Одно поле ввода с меню на плюсике -->
+      <div class="add-container">
+        <div class="add-bar">
+          <input id="taskInput" placeholder="Додати завдання..." onkeydown="handleEnter(event)">
+          <button onclick="toggleMenu(event)">+</button>
+        </div>
+        <div id="typeMenu" class="type-menu">
+          <button class="menu-item" onclick="addTask('red')">🔴 Обов'язково</button>
+          <button class="menu-item" onclick="addTask('green')">🟩 Необов'язково</button>
         </div>
       </div>
+
+    </div>
+
       <div class="section">
         <div class="heading">🟩 Необов'язково сьогодні</div>
         <div id="greenTaskList"></div>

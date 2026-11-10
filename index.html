@@ -11,7 +11,7 @@
 * { box-sizing: border-box; font-family: Arial, sans-serif; }
 body { background: white; color: #222; margin: 0; padding: 12px; display: flex; justify-content: center; }
 
-/* Календарь теперь занимает всю ширину экрана */
+/* Календар займає всю ширину екрана */
 .app-container { background: white; width: 100%; max-width: 100%; min-height: 95vh; padding: 10px; position: relative; }
 
 /* ЕКРАН 1: КАЛЕНДАР */
@@ -22,7 +22,7 @@ body { background: white; color: #222; margin: 0; padding: 12px; display: flex; 
 .weekdays { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; font-weight: bold; font-size: 15px; color: #777; margin-bottom: 15px; }
 .days-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; }
 
-/* Квадратики дней на всю страницу */
+/* Квадратики днів на всю сторінку */
 .day-cell { aspect-ratio: 1; border: 1px solid #ccc; border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 18px; cursor: pointer; position: relative; background: #fcfcfc; }
 .day-cell:hover { background: #eee; }
 .day-cell.empty { border: none; background: transparent; cursor: default; }
@@ -37,7 +37,6 @@ body { background: white; color: #222; margin: 0; padding: 12px; display: flex; 
 .back-btn { border: none; background: transparent; font-size: 32px; cursor: pointer; padding: 0 5px; }
 .day-title { font-size: 20px; font-weight: bold; }
 .section { margin-bottom: 25px; }
-.heading { font-size: 18px; font-weight: bold; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
 .task { display: flex; align-items: center; gap: 12px; margin: 14px 0; font-size: 16px; }
 .task input { appearance: none; width: 18px; height: 18px; border: 1px solid #888; border-radius: 3px; flex-shrink: 0; margin: 0; position: relative; cursor: pointer; }
 .task.red input { background: #d71920; border-color: #d71920; }
@@ -47,18 +46,17 @@ body { background: white; color: #222; margin: 0; padding: 12px; display: flex; 
 .task.done span { text-decoration: line-through; color: #999; }
 .delete { border: none; background: transparent; color: #aaa; font-size: 18px; cursor: pointer; }
 
-/* Одно поле ввода и кнопка плюс */
+/* Зона введення */
 .add-container { position: relative; margin-top: 30px; }
 .add-bar { display: flex; gap: 10px; border-bottom: 1px solid #ccc; padding: 8px 0; }
 .add-bar input { min-width: 0; flex: 1; border: none; font-size: 16px; outline: none; }
 .add-bar button { border: none; background: transparent; color: #222; font-size: 28px; cursor: pointer; padding: 0 10px; }
 
-/* Меню выбора цвета на плюсике */
+/* Меню кольорів */
 .type-menu { display: none; position: absolute; right: 0; bottom: 45px; background: white; border: 1px solid #ccc; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); padding: 8px; flex-direction: column; gap: 6px; z-index: 10; }
 .type-menu.active { display: flex; }
 .menu-item { border: none; background: transparent; font-size: 15px; padding: 8px 12px; cursor: pointer; display: flex; align-items: center; gap: 8px; border-radius: 6px; text-align: left; width: 100%; white-space: nowrap; }
 .menu-item:hover { background: #f5f5f5; }
-
 </style>
 </head>
 <body>
@@ -84,21 +82,7 @@ body { background: white; color: #222; margin: 0; padding: 12px; display: flex; 
       <button class="back-btn" onclick="openCalendar()">‹</button>
       <div class="day-title" id="dayScreenTitle">День тижня</div>
     </div>
-      <div class="content">
-      
-      <div class="section">
-        <div class="heading">🔴 Обов'язково сьогодні</div>
-        <div id="redTaskList"></div>
-      </div>
-      
-      <div class="section">
-        <div class="heading">🟩 Необов'язково сьогодні</div>
-        <div id="greenTaskList"></div>
-      </div>
-
-      <!-- Одно поле ввода с меню на плюсике -->
-      <div class="add-container">
-             <div class="content">
+    <div class="content">
       
       <div class="section">
         <div id="redTaskList"></div>
@@ -108,7 +92,7 @@ body { background: white; color: #222; margin: 0; padding: 12px; display: flex; 
         <div id="greenTaskList"></div>
       </div>
 
-      <!-- Одне єдине поле введення з меню кольорів -->
+      <!-- Одне єдине поле введення -->
       <div class="add-container">
         <div class="add-bar">
           <input id="taskInput" placeholder="Додати завдання..." onkeydown="handleEnter(event)">
@@ -121,12 +105,26 @@ body { background: white; color: #222; margin: 0; padding: 12px; display: flex; 
       </div>
 
     </div>
+  </div>
 
+</div>
+
+<script>
+const KEY = "advanced_calendar_planner_v3";
+const monthNames = ["Січень", "Лютий", "Березень", "Квітень", "Травень", "Червень", "Липень", "Серпень", "Вересень", "Жовтень", "Листопад", "Грудень"];
+const monthNamesGen = ["Січня", "Лютого", "Березня", "Квітня", "Травня", "Червня", "Липня", "Серпня", "Вересня", "Жовтня", "Листопада", "Грудня"];
+const dayNames = ["Неділя", "Понеділок", "Вівторок", "Середа", "Четвер", "П'ятниця", "Субота"];
 
 let currentDate = new Date(); 
 let selectedDateKey = ""; 
 
-let data = JSON.parse(localStorage.getItem(KEY) || '{"tasks":[]}');
+let data;
+try {
+  data = JSON.parse(localStorage.getItem(KEY) || '{"tasks":[]}');
+} catch (error) {
+  console.error("Помилка завантаження задач:", error);
+  data = { tasks: [] };
+}
 if (!Array.isArray(data.tasks)) data.tasks = [];
 
 function save() { localStorage.setItem(KEY, JSON.stringify(data)); }
@@ -213,6 +211,7 @@ function openDay(dateKey) {
   selectedDateKey = dateKey;
   document.getElementById("calendarScreen").classList.remove("active");
   document.getElementById("dayScreen").classList.add("active");
+  document.getElementById("typeMenu").classList.remove("active");
 
   const parts = dateKey.split("-").map(Number);
   const dateObj = new Date(parts[0], parts[1] - 1, parts[2]);
@@ -235,60 +234,50 @@ function renderTasks() {
 
     const checkbox = document.createElement("input");
     checkbox.type = "checkbox";
-    checkbox.checked = task.done;
-    checkbox.onchange = function() {
-      task.done = checkbox.checked;
-      save();
-      renderTasks();
-    };
-
-    const text = document.createElement("span");
-    text.textContent = task.text;
-
-    const del = document.createElement("button");
-    del.className = "delete";
-    del.textContent = "×";
-    del.onclick = function() {
-      data.tasks = data.tasks.filter(t => t !== task);
-      save();
-      renderTasks();
-    };
-
-    row.append(checkbox, text, del);
-    if (task.type === 'red') redList.append(row);
-    else greenList.append(row);
-  });
+checkbox.checked = task.done;
+checkbox.onchange = function() {
+task.done = checkbox.checked;
+save();
+renderTasks();
+};
+const text = document.createElement("span");
+text.textContent = task.text;
+const del = document.createElement("button");
+del.className = "delete";
+del.textContent = "×";
+del.onclick = function() {
+data.tasks = data.tasks.filter(t => t !== task);
+save();
+renderTasks();
+};
+row.append(checkbox, text, del);
+if (task.type === 'red') redList.append(row);
+else greenList.append(row);
+});
 }
 function toggleMenu(e) {
-  e.stopPropagation();
-  document.getElementById("typeMenu").classList.toggle("active");
+e.stopPropagation();
+document.getElementById("typeMenu").classList.toggle("active");
 }
-
 function addTask(type) {
-  const input = document.getElementById("taskInput");
-  const text = input.value.trim();
-  if (!text) return;
-
-  data.tasks.push({ text: text, type: type, done: false, date: selectedDateKey });
-  input.value = "";
-  document.getElementById("typeMenu").classList.remove("active");
-  save();
-  renderTasks();
+const input = document.getElementById("taskInput");
+const text = input.value.trim();
+if (!text) return;
+data.tasks.push({ text: text, type: type, done: false, date: selectedDateKey });
+input.value = "";
+document.getElementById("typeMenu").classList.remove("active");
+save();
+renderTasks();
 }
-
 function handleEnter(e) {
-  if (e.key === "Enter") {
-    // По нажатию на Enter добавляет задачу как важную (красную)
-    addTask('red');
-  }
+if (e.key === "Enter") {
+addTask('red');
 }
-
-// Закрытие меню выбора цвета при клике в любое другое место экрана
+}
 document.addEventListener("click", function() {
-  document.getElementById("typeMenu").classList.remove("active");
+document.getElementById("typeMenu").classList.remove("active");
 });
-
 renderCalendar();
-</script>
+  </script>
 </body>
 </html>

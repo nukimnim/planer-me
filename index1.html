@@ -1,0 +1,1425 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+
+<title>Дневник головной боли</title>
+
+<meta name="theme-color" content="#121212">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Дневник боли">
+<meta name="mobile-web-app-capable" content="yes">
+
+<style>
+:root {
+    color-scheme: dark;
+    --bg: #121212;
+    --surface: #1d1d1f;
+    --surface2: #27272a;
+    --border: #353539;
+    --text: #eeeeef;
+    --muted: #99999f;
+    --accent: #a995d5;
+    --accent-bg: #332b43;
+    --green: #8ebda3;
+    --red: #db8585;
+    --radius: 16px;
+}
+
+* {
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: calc(85px + env(safe-area-inset-bottom));
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-size: 15px;
+    line-height: 1.45;
+}
+
+button, input, textarea {
+    font: inherit;
+}
+
+button {
+    cursor: pointer;
+    color: inherit;
+}
+
+header {
+    padding: 24px 20px 12px;
+}
+
+header h1 {
+    font-size: 25px;
+    margin: 0 0 5px;
+    font-weight: 650;
+    letter-spacing: -0.5px;
+}
+
+header p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 13px;
+}
+
+main {
+    padding: 8px 16px 25px;
+    max-width: 600px;
+    margin: auto;
+}
+
+.section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 17px;
+    margin-bottom: 14px;
+}
+
+.section-title {
+    font-size: 16px;
+    font-weight: 650;
+    margin-bottom: 14px;
+}
+
+.field {
+    margin-bottom: 17px;
+}
+
+.field:last-child {
+    margin-bottom: 0;
+}
+
+.field-label {
+    display: block;
+    color: #c5c5ca;
+    font-size: 13px;
+    margin-bottom: 9px;
+}
+
+input[type="datetime-local"],
+input[type="text"],
+textarea {
+    width: 100%;
+    background: var(--surface2);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 11px;
+    padding: 12px;
+    min-height: 46px;
+    outline: none;
+    color-scheme: dark;
+}
+
+input:focus, textarea:focus {
+    border-color: var(--accent);
+}
+
+textarea {
+    resize: vertical;
+    min-height: 65px;
+}
+
+.chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.chip {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: #c9c9ce;
+    border-radius: 30px;
+    padding: 10px 13px;
+    min-height: 42px;
+    font-size: 13px;
+    transition: .15s;
+}
+
+.chip.active {
+    background: var(--accent-bg);
+    color: #d7c8f7;
+    border-color: var(--accent);
+}
+
+.chip.small {
+    padding: 8px 11px;
+    min-height: 37px;
+}
+
+.add-custom {
+    background: transparent;
+    color: var(--accent);
+    border: 1px dashed #75678e;
+}
+
+.range-row {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+input[type="range"] {
+    flex: 1;
+    accent-color: var(--accent);
+    min-width: 0;
+}
+
+.range-value {
+    min-width: 40px;
+    text-align: center;
+    font-size: 23px;
+    font-weight: 650;
+    color: var(--accent);
+}
+
+.range-hints {
+    display: flex;
+    justify-content: space-between;
+    color: var(--muted);
+    font-size: 11px;
+    margin-top: 5px;
+}
+
+.med-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 13px;
+    margin-bottom: 10px;
+}
+
+.med-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.med-header strong {
+    font-size: 14px;
+}
+
+.remove-med {
+    border: none;
+    background: transparent;
+    color: var(--red);
+    font-size: 20px;
+    padding: 2px 7px;
+}
+
+.med-card input {
+    margin-top: 8px;
+}
+
+.med-card .chips {
+    margin-bottom: 8px;
+}
+
+.add-button {
+    width: 100%;
+    border: 1px dashed var(--accent);
+    background: var(--accent-bg);
+    color: #d8c9f6;
+    padding: 13px;
+    border-radius: 12px;
+    font-weight: 600;
+    min-height: 47px;
+}
+
+.primary {
+    width: 100%;
+    border: none;
+    background: var(--accent);
+    color: #17131e;
+    padding: 16px;
+    border-radius: 13px;
+    font-weight: 700;
+    font-size: 16px;
+    min-height: 54px;
+}
+
+.secondary {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 13px;
+    border-radius: 11px;
+    width: 100%;
+    min-height: 45px;
+}
+
+.danger {
+    color: var(--red);
+}
+
+.note {
+    color: var(--muted);
+    font-size: 12px;
+    margin-top: 8px;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* Навигация */
+
+.bottom-nav {
+    position: fixed;
+    z-index: 20;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 9px 14px calc(9px + env(safe-area-inset-bottom));
+    display: flex;
+    justify-content: space-around;
+    background: rgba(26,26,28,.97);
+    border-top: 1px solid var(--border);
+    backdrop-filter: blur(15px);
+}
+
+.nav-item {
+    background: transparent;
+    border: none;
+    color: var(--muted);
+    padding: 7px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    font-size: 11px;
+}
+
+.nav-item .nav-icon {
+    font-size: 21px;
+}
+
+.nav-item.active {
+    color: var(--accent);
+}
+
+/* История */
+
+.history-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 15px;
+    margin-bottom: 11px;
+    overflow: hidden;
+}
+
+.history-head {
+    padding: 15px;
+    cursor: pointer;
+}
+
+.history-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.history-date {
+    font-weight: 650;
+}
+
+.history-intensity {
+    background: var(--accent-bg);
+    color: #d8c9f6;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 13px;
+}
+
+.history-sub {
+    color: var(--muted);
+    font-size: 12px;
+    margin-top: 7px;
+}
+
+.history-details {
+    padding: 0 15px 15px;
+    border-top: 1px solid var(--border);
+    font-size: 13px;
+}
+
+.detail-line {
+    margin-top: 12px;
+}
+
+.detail-line strong {
+    display: block;
+    color: var(--muted);
+    font-weight: 500;
+    font-size: 11px;
+    margin-bottom: 3px;
+}
+
+.history-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 15px;
+}
+
+.history-actions button {
+    flex: 1;
+    padding: 10px;
+    border-radius: 9px;
+    border: 1px solid var(--border);
+    background: var(--surface2);
+    font-size: 12px;
+}
+
+.empty {
+    text-align: center;
+    color: var(--muted);
+    padding: 50px 15px;
+}
+
+.empty-icon {
+    font-size: 36px;
+    margin-bottom: 10px;
+}
+
+.stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.stat {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 13px;
+    padding: 15px;
+}
+
+.stat strong {
+    display: block;
+    font-size: 24px;
+    color: var(--accent);
+}
+
+.stat span {
+    font-size: 11px;
+    color: var(--muted);
+}
+
+.export-section {
+    margin-top: 18px;
+}
+
+.toast {
+    position: fixed;
+    z-index: 50;
+    bottom: calc(95px + env(safe-area-inset-bottom));
+    left: 50%;
+    transform: translateX(-50%);
+    background: #35313d;
+    color: white;
+    padding: 12px 18px;
+    border-radius: 25px;
+    font-size: 13px;
+    box-shadow: 0 5px 20px #0006;
+    white-space: nowrap;
+    animation: appear .2s ease;
+}
+
+@keyframes appear {
+    from { opacity: 0; transform: translate(-50%, 8px); }
+    to { opacity: 1; transform: translate(-50%, 0); }
+}
+
+@media (max-width: 360px) {
+    .section { padding: 13px; }
+    main { padding-left: 11px; padding-right: 11px; }
+    .chip { padding: 9px 10px; }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>Дневник головной боли</h1>
+    <p>История приступов, симптомы и эффективность лечения</p>
+</header>
+
+<main>
+
+<!-- ФОРМА -->
+
+<div id="formPage">
+
+    <div class="section">
+        <div class="section-title">Новый приступ</div>
+
+        <div class="field">
+            <label class="field-label">Начало приступа</label>
+            <input type="datetime-local" id="startTime">
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">Контекст / триггер</div>
+
+        <div class="field">
+            <div class="chips" id="triggerChips"></div>
+        </div>
+
+        <div id="customTriggerBox" class="hidden field">
+            <input type="text" id="customTrigger" placeholder="Напиши свой триггер">
+            <button class="secondary" style="margin-top:8px" onclick="addCustomTrigger()">Добавить в варианты</button>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">Локализация боли</div>
+        <div class="note">Можно выбрать несколько участков.</div>
+        <div class="chips" id="locationChips"></div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">Характер боли</div>
+        <div class="chips" id="characterChips"></div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">Сопутствующие симптомы</div>
+        <div class="chips" id="symptomChips"></div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">Интенсивность боли</div>
+
+        <div class="range-row">
+            <input type="range" id="intensity" min="1" max="10" value="5">
+            <div class="range-value" id="intensityValue">5</div>
+        </div>
+
+        <div class="range-hints">
+            <span>1 · Слабая</span>
+            <span>10 · Невыносимая</span>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">Приём лекарств</div>
+
+        <div id="medications"></div>
+
+        <button class="add-button" onclick="addMedication()">
+            + Добавить обезболивающее
+        </button>
+    </div>
+
+    <div class="section">
+        <div class="section-title">Окончание приступа</div>
+
+        <div class="field">
+            <label class="field-label">Когда боль полностью прошла</label>
+            <input type="datetime-local" id="endTime">
+            <div class="note">Оставь пустым, если приступ продолжается.</div>
+        </div>
+
+        <div class="field">
+            <label class="field-label">Общий эффект лечения</label>
+            <div class="chips" id="effectChips"></div>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">Дополнительные заметки</div>
+        <textarea id="notes" placeholder="Необязательно: особенности приступа, обстоятельства..."></textarea>
+    </div>
+
+    <button class="primary" onclick="saveAttack()">Сохранить приступ</button>
+
+</div>
+
+
+<!-- ИСТОРИЯ -->
+
+<div id="historyPage" class="hidden">
+
+    <div class="stats">
+        <div class="stat">
+            <strong id="totalCount">0</strong>
+            <span>Всего приступов</span>
+        </div>
+
+        <div class="stat">
+            <strong id="averagePain">—</strong>
+            <span>Средняя интенсивность</span>
+        </div>
+    </div>
+
+    <div class="section-title">История приступов</div>
+
+    <div id="historyList"></div>
+
+    <div class="export-section">
+        <button class="primary" onclick="exportData()">
+            ↓ Экспорт данных (JSON)
+        </button>
+
+        <p class="note">
+            Файл содержит историю приступов и информацию о лекарствах.
+            Его можно отправить врачу.
+        </p>
+    </div>
+
+</div>
+
+</main>
+
+<nav class="bottom-nav">
+
+    <button class="nav-item active" id="navForm" onclick="showPage('form')">
+        <span class="nav-icon">＋</span>
+        <span>Запись</span>
+    </button>
+
+    <button class="nav-item" id="navHistory" onclick="showPage('history')">
+        <span class="nav-icon">▤</span>
+        <span>История</span>
+    </button>
+
+</nav>
+
+<div id="toast" class="toast hidden"></div>
+
+<script>
+
+/* ==========================
+   ХРАНИЛИЩЕ
+========================== */
+
+const STORAGE_KEY = "headacheDiary_v1";
+
+let attacks = [];
+let selectedTriggers = [];
+let selectedLocations = [];
+let selectedCharacters = [];
+let selectedSymptoms = [];
+let selectedEffect = "";
+
+let customTriggers = [];
+let customMedicines = [];
+
+let medicationCounter = 0;
+
+function loadData() {
+    try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+
+        if (raw) {
+            const data = JSON.parse(raw);
+
+            attacks = Array.isArray(data.attacks) ? data.attacks : [];
+            customTriggers = Array.isArray(data.customTriggers) ? data.customTriggers : [];
+            customMedicines = Array.isArray(data.customMedicines) ? data.customMedicines : [];
+        }
+    } catch (error) {
+        console.error("Ошибка загрузки данных:", error);
+    }
+}
+
+function persist() {
+    try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify({
+            attacks,
+            customTriggers,
+            customMedicines
+        }));
+    } catch (error) {
+        alert("Не удалось сохранить данные. Возможно, память устройства заполнена.");
+        console.error(error);
+    }
+}
+
+
+/* ==========================
+   ДАТА И ВРЕМЯ
+========================== */
+
+function localDateTime(date = new Date()) {
+    const offset = date.getTimezoneOffset() * 60000;
+    return new Date(date.getTime() - offset).toISOString().slice(0, 16);
+}
+
+function formatDate(value) {
+    if (!value) return "Не указано";
+
+    return new Date(value).toLocaleString("ru-RU", {
+        day: "2-digit",
+        month: "long",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit"
+    });
+}
+
+function formatDuration(start, end) {
+    if (!start || !end) return "Приступ продолжается";
+
+    const minutes = Math.round(
+        (new Date(end) - new Date(start)) / 60000
+    );
+
+    if (minutes < 0) return "Некорректное время окончания";
+
+    const days = Math.floor(minutes / 1440);
+    const hours = Math.floor((minutes % 1440) / 60);
+    const mins = minutes % 60;
+
+    let result = [];
+
+    if (days) result.push(days + " д.");
+    if (hours) result.push(hours + " ч.");
+    if (mins || result.length === 0) result.push(mins + " мин.");
+
+    return result.join(" ");
+}
+
+
+/* ==========================
+   ЧИПСЫ
+========================== */
+
+function renderChips(containerId, options, selected, callback, multiple = true) {
+
+    const container = document.getElementById(containerId);
+
+    container.innerHTML = "";
+
+    options.forEach(option => {
+
+        const button = document.createElement("button");
+
+        button.type = "button";
+        button.className = "chip" +
+            (selected.includes(option) ? " active" : "");
+
+        button.textContent = option;
+
+        button.onclick = () => {
+
+            if (multiple) {
+
+                if (selected.includes(option)) {
+                    selected.splice(selected.indexOf(option), 1);
+                } else {
+                    selected.push(option);
+                }
+
+            } else {
+
+                selected.length = 0;
+                selected.push(option);
+
+            }
+
+            callback();
+        };
+
+        container.appendChild(button);
+
+    });
+
+}
+
+const defaultTriggers = [
+    "После ночной смены",
+    "Недосып",
+    "Стресс",
+    "Погода",
+    "Физическая нагрузка",
+    "Голод",
+    "Пропуск приёма пищи",
+    "Обезвоживание",
+    "Менструация",
+    "Яркий свет",
+    "Сильные запахи",
+    "Длительная работа за экраном",
+    "Кофеин",
+    "Другое"
+];
+
+const locations = [
+    "Левая лобная область",
+    "Правая лобная область",
+    "Центр лба",
+    "Левый висок",
+    "Правый висок",
+    "Оба виска",
+    "Левый глаз / глазница",
+    "Правый глаз / глазница",
+    "Область переносицы",
+    "Левая теменная область",
+    "Правая теменная область",
+    "Макушка",
+    "Левый затылок",
+    "Правый затылок",
+    "Центр затылка",
+    "Вся голова",
+    "Левая половина головы",
+    "Правая половина головы",
+    "Область лица",
+    "Верхняя челюсть",
+    "Нижняя челюсть",
+    "Шея",
+    "Затылок и шея"
+];
+
+const characters = [
+    "Давящая",
+    "Пульсирующая",
+    "Ноющая",
+    "Острая",
+    "Распирающая",
+    "Стреляющая",
+    "Жгучая",
+    "Сжимающая",
+    "Дёргающая"
+];
+
+const symptoms = [
+    "Светобоязнь",
+    "Звукобоязнь",
+    "Тошнота",
+    "Рвота",
+    "Головокружение",
+    "Непереносимость запахов",
+    "Мушки перед глазами",
+    "Затуманивание зрения",
+    "Нарушение зрения",
+    "Онемение",
+    "Покалывание",
+    "Слабость",
+    "Сложность концентрации",
+    "Скованность шеи"
+];
+
+const effects = [
+    "Помогло полностью",
+    "Стало легче",
+    "Не помогло"
+];
+
+function renderAllChips() {
+
+    const triggerOptions = [
+        ...defaultTriggers.filter(x => x !== "Другое"),
+        ...customTriggers,
+        "Другое"
+    ];
+
+    renderChips("triggerChips", triggerOptions,
+        selectedTriggers, () => {
+            renderAllChips();
+
+            document.getElementById("customTriggerBox")
+                .classList.toggle(
+                    "hidden",
+                    !selectedTriggers.includes("Другое")
+                );
+        });
+
+    renderChips("locationChips", locations,
+        selectedLocations, renderAllChips);
+
+    renderChips("characterChips", characters,
+        selectedCharacters, renderAllChips);
+
+    renderChips("symptomChips", symptoms,
+        selectedSymptoms, renderAllChips);
+
+    renderChips("effectChips", effects,
+        selectedEffect ? [selectedEffect] : [],
+        () => {
+            selectedEffect = selectedEffect === "" ? "" : selectedEffect;
+            renderAllChips();
+        }, false);
+
+    // Сохраняем эффект отдельно, чтобы корректно переключать кнопки.
+    document.querySelectorAll("#effectChips .chip").forEach(button => {
+        button.onclick = () => {
+            selectedEffect = selectedEffect === button.textContent
+                ? ""
+                : button.textContent;
+
+            renderAllChips();
+        };
+    });
+}
+
+
+/* ==========================
+   СВОИ ТРИГГЕРЫ
+========================== */
+
+function addCustomTrigger() {
+
+    const input = document.getElementById("customTrigger");
+    const value = input.value.trim();
+
+    if (!value) return;
+
+    if (!customTriggers.includes(value)) {
+        customTriggers.push(value);
+        persist();
+    }
+
+    selectedTriggers = selectedTriggers.filter(x => x !== "Другое");
+
+    if (!selectedTriggers.includes(value)) {
+        selectedTriggers.push(value);
+    }
+
+    input.value = "";
+
+    renderAllChips();
+
+    document.getElementById("customTriggerBox")
+        .classList.add("hidden");
+}
+
+
+/* ==========================
+   ЛЕКАРСТВА
+========================== */
+
+const defaultMedicines = [
+    "Ибупрофен",
+    "Цитрамон",
+    "Суматриптан",
+    "Парацетамол",
+    "Напроксен",
+    "Аспирин",
+    "Другое"
+];
+
+function addMedication() {
+
+    medicationCounter++;
+
+    const id = medicationCounter;
+
+    const container = document.getElementById("medications");
+
+    const card = document.createElement("div");
+
+    card.className = "med-card";
+    card.dataset.id = id;
+
+    const header = document.createElement("div");
+    header.className = "med-header";
+
+    const title = document.createElement("strong");
+    title.textContent = "Препарат " + id;
+
+    const remove = document.createElement("button");
+    remove.className = "remove-med";
+    remove.textContent = "×";
+    remove.onclick = () => card.remove();
+
+    header.append(title, remove);
+
+    const chips = document.createElement("div");
+    chips.className = "chips";
+
+    const input = document.createElement("input");
+    input.type = "text";
+    input.placeholder = "Название препарата";
+
+    const timeLabel = document.createElement("label");
+    timeLabel.className = "field-label";
+    timeLabel.style.marginTop = "12px";
+    timeLabel.textContent = "Время приёма";
+
+    const time = document.createElement("input");
+    time.type = "datetime-local";
+    time.value = localDateTime();
+
+    const doseLabel = document.createElement("label");
+    doseLabel.className = "field-label";
+    doseLabel.style.marginTop = "12px";
+    doseLabel.textContent = "Дозировка (необязательно)";
+
+    const dose = document.createElement("input");
+    dose.type = "text";
+    dose.placeholder = "Например, 400 мг";
+
+    const options = [
+        ...defaultMedicines.filter(x => x !== "Другое"),
+        ...customMedicines,
+        "Другое"
+    ];
+
+    options.forEach(name => {
+
+        const button = document.createElement("button");
+
+        button.className = "chip small";
+        button.type = "button";
+        button.textContent = name;
+
+        button.onclick = () => {
+            input.value = name === "Другое" ? "" : name;
+
+            chips.querySelectorAll(".chip")
+                .forEach(b => b.classList.remove("active"));
+
+            button.classList.add("active");
+
+            if (name === "Другое") input.focus();
+        };
+
+        chips.appendChild(button);
+    });
+
+    card.append(
+        header,
+        chips,
+        input,
+        timeLabel,
+        time,
+        doseLabel,
+        dose
+    );
+
+    container.appendChild(card);
+
+}
+
+
+/* ==========================
+   СОХРАНЕНИЕ ПРИСТУПА
+========================== */
+
+function saveAttack() {
+
+    const start = document.getElementById("startTime").value;
+    const end = document.getElementById("endTime").value;
+
+    if (!start) {
+        alert("Укажи время начала приступа.");
+        return;
+    }
+
+    if (end && new Date(end) < new Date(start)) {
+        alert("Время окончания не может быть раньше начала.");
+        return;
+    }
+
+    const medications = [];
+
+    document.querySelectorAll(".med-card").forEach(card => {
+
+        const inputs = card.querySelectorAll("input");
+
+        const name = inputs[0].value.trim();
+        const time = inputs[1].value;
+        const dose = inputs[2].value.trim();
+
+        if (name) {
+
+            medications.push({
+                name,
+                time,
+                dose
+            });
+
+            if (
+                !defaultMedicines.includes(name) &&
+                !customMedicines.includes(name)
+            ) {
+                customMedicines.push(name);
+            }
+        }
+    });
+
+    const triggerValues = selectedTriggers.filter(x => x !== "Другое");
+
+    const custom = document.getElementById("customTrigger").value.trim();
+
+    if (custom && !triggerValues.includes(custom)) {
+        triggerValues.push(custom);
+
+        if (!customTriggers.includes(custom)) {
+            customTriggers.push(custom);
+        }
+    }
+
+    const attack = {
+
+        id: Date.now().toString() + Math.random().toString(36).slice(2, 7),
+
+        start,
+        end: end || null,
+
+        triggers: triggerValues,
+
+        locations: [...selectedLocations],
+
+        characters: [...selectedCharacters],
+
+        symptoms: [...selectedSymptoms],
+
+        intensity: Number(document.getElementById("intensity").value),
+
+        medications,
+
+        effect: selectedEffect,
+
+        notes: document.getElementById("notes").value.trim(),
+
+        created: new Date().toISOString()
+
+    };
+
+    attacks.unshift(attack);
+
+    persist();
+
+    resetForm();
+
+    showToast("Приступ сохранён");
+
+    renderHistory();
+
+    showPage("history");
+
+}
+
+
+/* ==========================
+   СБРОС ФОРМЫ
+========================== */
+
+function resetForm() {
+
+    selectedTriggers = [];
+    selectedLocations = [];
+    selectedCharacters = [];
+    selectedSymptoms = [];
+    selectedEffect = "";
+
+    document.getElementById("startTime").value = localDateTime();
+    document.getElementById("endTime").value = "";
+    document.getElementById("notes").value = "";
+    document.getElementById("customTrigger").value = "";
+    document.getElementById("intensity").value = 5;
+    document.getElementById("intensityValue").textContent = "5";
+
+    document.getElementById("medications").innerHTML = "";
+
+    document.getElementById("customTriggerBox")
+        .classList.add("hidden");
+
+    renderAllChips();
+}
+
+
+/* ==========================
+   ИСТОРИЯ
+========================== */
+
+function renderHistory() {
+
+    const container = document.getElementById("historyList");
+
+    container.innerHTML = "";
+
+    document.getElementById("totalCount").textContent = attacks.length;
+
+    const average = attacks.length
+        ? attacks.reduce((sum, a) => sum + Number(a.intensity || 0), 0) / attacks.length
+        : 0;
+
+    document.getElementById("averagePain").textContent =
+        attacks.length ? average.toFixed(1) + "/10" : "—";
+
+    if (!attacks.length) {
+
+        container.innerHTML = `
+            <div class="empty">
+                <div class="empty-icon">☾</div>
+                <div>Пока нет записей</div>
+                <p>Здесь появится история твоих приступов.</p>
+            </div>
+        `;
+
+        return;
+    }
+
+    attacks.forEach(attack => {
+
+        const card = document.createElement("div");
+        card.className = "history-card";
+
+        const head = document.createElement("div");
+        head.className = "history-head";
+
+        const top = document.createElement("div");
+        top.className = "history-top";
+
+        const date = document.createElement("div");
+        date.className = "history-date";
+        date.textContent = formatDate(attack.start);
+
+        const intensity = document.createElement("div");
+        intensity.className = "history-intensity";
+        intensity.textContent = attack.intensity + "/10";
+
+        top.append(date, intensity);
+
+        const sub = document.createElement("div");
+        sub.className = "history-sub";
+
+        const locationsText = (attack.locations || []).join(", ");
+
+        sub.textContent = locationsText || "Локализация не указана";
+
+        head.append(top, sub);
+
+        const details = document.createElement("div");
+        details.className = "history-details hidden";
+
+        function addLine(label, value) {
+
+            const line = document.createElement("div");
+            line.className = "detail-line";
+
+            const strong = document.createElement("strong");
+            strong.textContent = label;
+
+            const text = document.createElement("div");
+            text.textContent = value || "Не указано";
+
+            line.append(strong, text);
+
+            details.appendChild(line);
+        }
+
+        addLine("Продолжительность",
+            formatDuration(attack.start, attack.end));
+
+        addLine("Окончание",
+            attack.end ? formatDate(attack.end) : "Приступ продолжается");
+
+        addLine("Триггеры", (attack.triggers || []).join(", "));
+
+        addLine("Локализация", (attack.locations || []).join(", "));
+
+        addLine("Характер боли", (attack.characters || []).join(", "));
+
+        addLine("Симптомы", (attack.symptoms || []).join(", "));
+
+        addLine("Интенсивность", attack.intensity + "/10");
+
+        const meds = (attack.medications || []).map(m => {
+
+            return [
+                m.name,
+                m.dose ? "(" + m.dose + ")" : "",
+                m.time ? "в " + formatDate(m.time) : ""
+            ].filter(Boolean).join(" ");
+
+        }).join("; ");
+
+        addLine("Принятые лекарства", meds);
+
+        addLine("Эффект", attack.effect);
+
+        addLine("Заметки", attack.notes);
+
+        const actions = document.createElement("div");
+        actions.className = "history-actions";
+
+        const deleteButton = document.createElement("button");
+        deleteButton.className = "danger";
+        deleteButton.textContent = "Удалить";
+
+        deleteButton.onclick = () => {
+
+            if (!confirm("Удалить эту запись?")) return;
+
+            attacks = attacks.filter(a => a.id !== attack.id);
+
+            persist();
+            renderHistory();
+
+            showToast("Запись удалена");
+
+        };
+
+        const closeButton = document.createElement("button");
+        closeButton.textContent = "Свернуть";
+
+        closeButton.onclick = () => {
+            details.classList.add("hidden");
+        };
+
+        actions.append(deleteButton, closeButton);
+
+        details.appendChild(actions);
+
+        head.onclick = () => {
+            details.classList.toggle("hidden");
+        };
+
+        card.append(head, details);
+
+        container.appendChild(card);
+
+    });
+
+}
+
+
+/* ==========================
+   ЭКСПОРТ
+========================== */
+
+function exportData() {
+
+    if (!attacks.length) {
+        alert("Нет данных для экспорта.");
+        return;
+    }
+
+    const data = {
+
+        application: "Дневник головной боли",
+
+        exportDate: new Date().toISOString(),
+
+        totalAttacks: attacks.length,
+
+        attacks
+
+    };
+
+    const blob = new Blob(
+        [JSON.stringify(data, null, 2)],
+        { type: "application/json;charset=utf-8" }
+    );
+
+    const url = URL.createObjectURL(blob);
+
+    const link = document.createElement("a");
+
+    link.href = url;
+
+    link.download =
+        "headache-diary-" +
+        new Date().toISOString().slice(0, 10) +
+        ".json";
+
+    document.body.appendChild(link);
+
+    link.click();
+
+    link.remove();
+
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+
+}
+
+
+/* ==========================
+   НАВИГАЦИЯ
+========================== */
+
+function showPage(page) {
+
+    const form = document.getElementById("formPage");
+    const history = document.getElementById("historyPage");
+
+    const navForm = document.getElementById("navForm");
+    const navHistory = document.getElementById("navHistory");
+
+    if (page === "form") {
+
+        form.classList.remove("hidden");
+        history.classList.add("hidden");
+
+        navForm.classList.add("active");
+        navHistory.classList.remove("active");
+
+    } else {
+
+        form.classList.add("hidden");
+        history.classList.remove("hidden");
+
+        navForm.classList.remove("active");
+        navHistory.classList.add("active");
+
+        renderHistory();
+
+    }
+
+    window.scrollTo({ top: 0, behavior: "instant" });
+
+}
+
+
+/* ==========================
+   УВЕДОМЛЕНИЯ
+========================== */
+
+let toastTimer;
+
+function showToast(message) {
+
+    const toast = document.getElementById("toast");
+
+    toast.textContent = message;
+    toast.classList.remove("hidden");
+
+    clearTimeout(toastTimer);
+
+    toastTimer = setTimeout(() => {
+        toast.classList.add("hidden");
+    }, 2300);
+
+}
+
+
+/* ==========================
+   ИНИЦИАЛИЗАЦИЯ
+========================== */
+
+document.getElementById("intensity").addEventListener("input", e => {
+
+    document.getElementById("intensityValue").textContent = e.target.value;
+
+});
+
+loadData();
+
+document.getElementById("startTime").value = localDateTime();
+
+renderAllChips();
+
+renderHistory();
+
+</script>
+
+</body>
+</html>

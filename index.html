@@ -492,5 +492,13 @@ console.error("Помилка бази даних:", error);
 alert("Не вдалося відкрити сховище завдань.");
 });
 </script>
+  <script>
+if ("serviceWorker" in navigator &&
+!window.Capacitor?.isNativePlatform?.() &&
+location.protocol === "https:") {
+navigator.serviceWorker.register("./sw.js")
+.catch(console.error);
+}
+  </script>
 </body>
 </html>
